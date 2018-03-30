@@ -525,7 +525,7 @@ layer {
   bottom: "fire9/concat"
   top: "conv10"
   convolution_param {
-    num_output: 0
+    num_output: 4096
     kernel_size: 1
   }
 }
