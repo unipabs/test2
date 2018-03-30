@@ -525,13 +525,8 @@ layer {
   bottom: "fire9/concat"
   top: "conv10"
   convolution_param {
-    num_output: 4096
+    num_output: 0
     kernel_size: 1
-    weight_filler {
-      type: "gaussian"
-      mean: 0.0
-      std: 0.01
-    }
   }
 }
 layer {
@@ -541,88 +536,18 @@ layer {
   top: "conv10"
 }
 layer {
-  name: "drop10"
-  type: "Dropout"
+  name: "pool10"
+  type: "Pooling"
   bottom: "conv10"
-  top: "conv10"
-  dropout_param {
-    dropout_ratio: 0.5
+  top: "pool10"
+  pooling_param {
+    pool: AVE
+    global_pooling: true
   }
 }
 layer {
-  name: "conv11"
-  type: "Convolution"
-  bottom: "conv10"
-  top: "conv11"
-  convolution_param {
-    num_output: 4096
-    pad: 0
-    kernel_size: 1
-    group: 1
-    stride: 1
-  }
-}
-layer {
-  name: "relu_conv11"
-  type: "ReLU"
-  bottom: "conv11"
-  top: "conv11"
-}
-layer {
-  name: "drop11"
-  type: "Dropout"
-  bottom: "conv11"
-  top: "conv11"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
-layer {
-  name: "score_fr"
-  type: "Convolution"
-  bottom: "conv11"
-  top: "score_fr"
-  param {
-    lr_mult: 1.0
-    decay_mult: 1.0
-  }
-  param {
-    lr_mult: 2.0
-    decay_mult: 0.0
-  }
-  convolution_param {
-    num_output: 2
-    pad: 0
-    kernel_size: 1
-  }
-}
-layer {
-  name: "upscore"
-  type: "Deconvolution"
-  bottom: "score_fr"
-  top: "upscore"
-  param {
-    lr_mult: 0.0
-  }
-  convolution_param {
-    num_output: 2
-    bias_term: false
-    kernel_size: 63
-    group: 2
-    stride: 32
-    weight_filler {
-      type: "bilinear"
-    }
-  }
-}
-layer {
-  name: "score"
-  type: "Crop"
-  bottom: "upscore"
-  bottom: "data"
-  top: "score"
-  crop_param {
-    axis: 2
-    offset: 18
-  }
+  name: "prob"
+  type: "Softmax"
+  bottom: "pool10"
+  top: "prob"
 }
